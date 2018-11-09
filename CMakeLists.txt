@@ -140,11 +140,11 @@ if (NOT BUILD_ASE AND NOT BUILD_LIBOPAE_C)
   message(FATAL_ERROR "Not building any OPAE libraries")
 endif()
 
-option(BUILD_VAI "Enable virtualization" ON)
-mark_as_advanced(BUILD_VAI)
-if(BUILD_VAI)
-  add_subdirectory(vai/api)
-  add_subdirectory(vai)
+option(BUILD_VAI_ASE "Enable virtualization" ON)
+mark_as_advanced(BUILD_VAI_ASE)
+if(BUILD_VAI_ASE)
+  add_subdirectory(vai-ase/api)
+  add_subdirectory(vai-ase)
 endif()
 
 ############################################################################
