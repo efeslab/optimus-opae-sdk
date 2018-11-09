@@ -439,6 +439,7 @@ void ase_alloc_action(struct buffer_t *);
 void ase_dealloc_action(struct buffer_t *, int);
 void ase_destroy(void);
 uint64_t *ase_fakeaddr_to_vaddr(uint64_t);
+uint64_t *vai_fakeaddr_to_vaddr(uint64_t);
 void ase_dbg_memtest(struct buffer_t *);
 void ase_perror_teardown(void);
 void ase_empty_buffer(struct buffer_t *);
