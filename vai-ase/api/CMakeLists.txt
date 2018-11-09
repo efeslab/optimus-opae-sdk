@@ -29,7 +29,7 @@ cmake_minimum_required(VERSION 2.8.12)
 project("opae-c-vai-ase")
 find_package(Threads  REQUIRED)
 set(API_DIR ${PROJECT_SOURCE_DIR})
-set(ASEAPI_SRC
+set(VAIASEAPI_SRC
   ${API_DIR}/../sw/tstamp_ops.c
   ${API_DIR}/../sw/ase_ops.c
   ${API_DIR}/../sw/ase_strings.c
@@ -39,7 +39,7 @@ set(ASEAPI_SRC
   ${API_DIR}/src/common.c
   ${API_DIR}/src/vai.c)
 
-add_library(opae-c-vai-ase SHARED ${ASEAPI_SRC})
+add_library(opae-c-vai-ase SHARED ${VAIASEAPI_SRC})
 target_link_libraries(opae-c-vai-ase rt safestr)
 
 # Define headers for this library. PUBLIC headers are used for

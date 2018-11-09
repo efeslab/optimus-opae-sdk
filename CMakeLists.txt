@@ -104,6 +104,10 @@ install(DIRECTORY common/include/safe_string
   DESTINATION include
   COMPONENT safestrheaders)
 
+install(DIRECTORY common/include/vai
+  DESTINATION include
+  COMPONENT libopaevaiheaders)
+
 ############################################################################
 ## Add 'documentation' target ##############################################
 ############################################################################
