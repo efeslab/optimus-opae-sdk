@@ -1,0 +1,2 @@
+cci_hello_afu.sv
+cci_hello.json
