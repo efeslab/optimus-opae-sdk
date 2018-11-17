@@ -37,7 +37,9 @@ set(VAIASEAPI_SRC
   ${API_DIR}/../sw/mqueue_ops.c
   ${API_DIR}/../sw/error_report.c
   ${API_DIR}/src/common.c
-  ${API_DIR}/src/vai.c)
+  ${API_DIR}/src/vai.c
+  ${API_DIR}/src/malloc.c
+  ${API_DIR}/src/vai_afu_malloc.c)
 
 add_library(opae-c-vai-ase SHARED ${VAIASEAPI_SRC})
 target_link_libraries(opae-c-vai-ase rt safestr)

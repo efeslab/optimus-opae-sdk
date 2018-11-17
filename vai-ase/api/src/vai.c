@@ -23,7 +23,7 @@
 struct vai_afu_conn *vai_afu_connect(void)
 {
     struct vai_afu_conn *conn = (struct vai_afu_conn *)ase_malloc(sizeof(*conn));
-
+	global_conn = conn;
     session_init();
 
     return conn;
@@ -32,6 +32,7 @@ struct vai_afu_conn *vai_afu_connect(void)
 int vai_afu_disconnect(struct vai_afu_conn *conn)
 {
     session_deinit();
+	global_conn = NULL;
 
     free(conn);
 
@@ -45,11 +46,12 @@ int vai_afu_alloc_region(struct vai_afu_conn *conn, void **buf_addr,
 
     UNUSED_PARAM(conn);
 
-    if (!(VAI_IS_PAGE_ALIGNED(prefered_addr)) || !(VAI_IS_PAGE_ALIGNED(length)))
+    if ((prefered_addr != (uint64_t)-1L) &&
+		(!(VAI_IS_PAGE_ALIGNED(prefered_addr)) || !(VAI_IS_PAGE_ALIGNED(length))))
         return -1;
 
     buf = (struct buffer_t *) ase_malloc(sizeof(*buf));
-    buf->memsize = (uint32_t) length;
+    buf->memsize = (uint64_t) length;
 
     allocate_buffer(buf, (uint64_t *)prefered_addr);
 
@@ -60,7 +62,7 @@ int vai_afu_alloc_region(struct vai_afu_conn *conn, void **buf_addr,
     }
     else {
         *buf_addr = (void*)buf->vbase;
-        return -1;
+        return 0;
     }
 }
 

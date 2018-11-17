@@ -1144,7 +1144,13 @@ void allocate_buffer(struct buffer_t *mem, uint64_t *suggested_vaddr)
 	    (uint64_t) mmap(NULL, mem->memsize,
 			    PROT_READ | PROT_WRITE, MAP_SHARED,
 			    fd_alloc, 0);
-    } else {
+    } else if (suggested_vaddr == (uint64_t*) -1) {
+	mem->vbase =
+		(uint64_t) mmap(NULL, mem->memsize,
+				PROT_NONE, MAP_SHARED,
+				fd_alloc, 0);
+	}
+	else {
 	mem->vbase =
 	    (uint64_t) mmap(suggested_vaddr, mem->memsize,
 			    PROT_READ | PROT_WRITE,

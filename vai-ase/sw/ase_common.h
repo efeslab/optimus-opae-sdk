@@ -346,7 +346,8 @@ struct buffer_t			//  Descriptiion                    Computed by
 	int32_t is_privmem;	// Flag memory as a private memory |
 	int32_t is_mmiomap;	// Flag memory as CSR map          |
 	int32_t is_umas;	// Flag memory as UMAS region      |
-	uint32_t memsize;	// Memory size                     |   APP
+	uint32_t payload;
+	uint64_t memsize;	// Memory size                     |   APP
 	char memname[ASE_FILENAME_LEN];	// Shared memory name              | INTERNAL
 	struct buffer_t *next;
 };
