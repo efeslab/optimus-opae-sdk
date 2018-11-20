@@ -92,6 +92,126 @@ static struct umsgcmd_t *incoming_umsg_pkt;
 // Incoming MMIO packet (allocated in ase_init, deallocated in start_simkill_countdown)
 static struct mmio_t *incoming_mmio_pkt;
 
+static uint64_t afu_offset_array[16];
+
+static void vai_afu_set_offset(uint32_t id, uint64_t offset)
+{
+    if (id > 16 || id <= 0) return;
+
+    afu_offset_array[id] = offset;
+}
+
+static uint64_t vai_afu_get_offset(uint32_t id)
+{
+    if (id > 16 || id <= 0) return -1;
+
+    return afu_offset_array[id];
+}
+
+#define OFFSET_ACCELERATOR_START 0x30
+#define OFFSET_ACCELERATOR_END 0xb0
+
+static int vai_mmio_audit(struct mmio_t *mmio_pkt)
+{
+    if (mmio_pkt->addr >= OFFSET_ACCELERATOR_START &&
+            mmio_pkt->addr < OFFSET_ACCELERATOR_END) {
+        int vmid = (mmio_pkt->addr - OFFSET_ACCELERATOR_START) / 8;
+        uint64_t vm_offset = mmio_pkt->qword[0];
+
+        printf("mmio=%x, vmid=%d, value=%lx\n", mmio_pkt->addr,
+                    vmid, vm_offset);
+
+        vai_afu_set_offset(vmid, vm_offset*64);
+
+        return 0;
+    }
+
+    return -1;
+}
+
+#define SIZE_64G (64*1024*1024*1024)
+
+static int vai_iopt_addr_to_vmid(uint64_t addr)
+{
+    /* jcma: each vm has 64G of fpga accessible memory space */
+    uint64_t vmid = addr >> 36;
+
+    printf("iopt_addr=%lx, vmid=%d\n", addr, vmid);
+
+    return vmid;
+}
+
+static uint64_t vai_audit_ccip_addr(uint64_t addr)
+{
+    uint64_t vmid = vai_iopt_addr_to_vmid(addr);
+
+    return addr - vai_afu_get_offset(vmid);
+}
+
+
+uint64_t *vai_fakeaddr_to_vaddr(uint64_t req_vaddr)
+{
+    FUNC_CALL_ENTRY;
+
+    struct buffer_t *trav_ptr = (struct buffer_t *) NULL;
+
+    int i = 0;
+
+    req_vaddr = vai_audit_ccip_addr(req_vaddr);
+
+    if (req_vaddr != 0) {
+        uint64_t *ase_pbase;
+        uint64_t real_offset, calc_pbase;
+
+        printf("req_vaddr=%lx\n", req_vaddr);
+
+        trav_ptr = head;
+        while (trav_ptr != NULL) {
+            uint64_t fake_vaddr = trav_ptr->vbase;
+            uint64_t fake_vaddr_hi = trav_ptr->vbase +
+                        (trav_ptr->fake_paddr_hi - trav_ptr->fake_paddr);
+
+            i++;
+
+            printf("SLOT %d: vaddr_start: %lx, vaddr_end: %lx\n",
+                        i, fake_vaddr, fake_vaddr_hi);
+
+            if ((req_vaddr >= fake_vaddr) &&
+                    (req_vaddr < fake_vaddr_hi)) {
+                real_offset = req_vaddr - fake_vaddr;
+                calc_pbase = trav_ptr->pbase;
+                ase_pbase =
+                    (uint64_t *) (uintptr_t) (calc_pbase + real_offset);
+
+                printf("HIT: vbase=%lx, pbase=%lx\n", trav_ptr->vbase, trav_ptr->pbase);
+                printf("ase_pbase=%lx\n", (uint64_t)ase_pbase);
+
+                ase_pbase[0] = 0;
+
+                return ase_pbase;
+            }
+
+            trav_ptr = trav_ptr->next;
+
+        }
+    }
+    else {
+        trav_ptr = NULL;
+    }
+
+    if (trav_ptr == NULL) {
+        ASE_ERR("VAI cannot find the requested address\n");
+        //start_simkill_countdown();
+    }
+
+    return NULL;
+
+    FUNC_CALL_EXIT;
+}
+
+
+
+
 /*
  * ASE capability register
  * Purpose: This is the response for portctrl_cmd requests (as an ACK)
@@ -948,6 +1068,8 @@ int ase_listener(void)
 			print_mmiopkt(fp_memaccess_log, "MMIO Sent",
 				      incoming_mmio_pkt);
 #endif
+            /* jcma: extrate offset from mmio request */
+            vai_mmio_audit(incoming_mmio_pkt);
 			mmio_dispatch(0, incoming_mmio_pkt);
 		}
 		// ------------------------------------------------------------------------------- //
