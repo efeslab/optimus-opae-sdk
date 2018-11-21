@@ -96,14 +96,14 @@ static uint64_t afu_offset_array[16];
 
 static void vai_afu_set_offset(uint32_t id, uint64_t offset)
 {
-    if (id > 16 || id <= 0) return;
+    if (id >= 16 || id < 0) return;
 
     afu_offset_array[id] = offset;
 }
 
 static uint64_t vai_afu_get_offset(uint32_t id)
 {
-    if (id > 16 || id <= 0) return -1;
+    if (id >= 16 || id < 0) return -1;
 
     return afu_offset_array[id];
 }
