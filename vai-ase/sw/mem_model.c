@@ -489,8 +489,6 @@ uint64_t *vai_fakeaddr_to_vaddr(uint64_t req_vaddr)
                 printf("HIT: vbase=%lx, pbase=%lx\n", trav_ptr->vbase, trav_ptr->pbase);
                 printf("ase_pbase=%lx\n", (uint64_t)ase_pbase);
 
-                ase_pbase[0] = 0;
-
                 return ase_pbase;
             }
 
@@ -511,32 +509,3 @@ uint64_t *vai_fakeaddr_to_vaddr(uint64_t req_vaddr)
 
     FUNC_CALL_EXIT;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
