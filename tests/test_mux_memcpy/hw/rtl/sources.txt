@@ -1,0 +1,8 @@
+cci_memcpy.json
+
+QI:../par/cci_base_par_files.qsf
+SI:../sim/base_addenda.txt
+
++incdir+.
+cci_mux_test.sv
+cci_memcpy_afu.sv
