@@ -4,18 +4,18 @@
  */
 #include <vai/malloc.h>
 #include <vai/vai.h>
-void *vai_afu_malloc(struct vai_afu_conn *conn, size_t size) {
+volatile void *vai_afu_malloc(struct vai_afu_conn *conn, size_t size) {
 	if (conn == global_conn) {
-		return dlmalloc(size);
+		return (volatile void*)dlmalloc(size);
 	}
 	else {
 		ASE_ERR("Global conn != required conn");
-		return NULL;
+		return (volatile void*)NULL;
 	}
 }
-void vai_afu_free(struct vai_afu_conn *conn, void *p) {
+void vai_afu_free(struct vai_afu_conn *conn, volatile void *p) {
 	if (conn == global_conn) {
-		dlfree(p);
+		dlfree((void *)p);
 	}
 	else {
 		ASE_ERR("Global conn != required conn");
