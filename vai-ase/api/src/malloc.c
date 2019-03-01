@@ -3,6 +3,8 @@
  */
 #include <vai/malloc.h>
 #include <vai/vai.h>
+
+struct vai_afu_conn* global_conn;
 /*
   This is a version (aka dlmalloc) of malloc/free/realloc written by
   Doug Lea and released to the public domain, as explained at
