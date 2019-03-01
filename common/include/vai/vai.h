@@ -1,6 +1,10 @@
 #ifndef _LIBVAI_H_
 #define _LIBVAI_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 #define CL_SIZE 64
 #define CL(x) CL_SIZE*(x)
@@ -36,15 +40,36 @@ struct vai_afu_conn {
     };
 };
 
+typedef enum {
+	FPGA_OK = 0,         /**< Operation completed successfully */
+	FPGA_INVALID_PARAM,  /**< Invalid parameter supplied */
+	FPGA_BUSY,           /**< Resource is busy */
+	FPGA_EXCEPTION,      /**< An exception occurred */
+	FPGA_NOT_FOUND,      /**< A required resource was not found */
+	FPGA_NO_MEMORY,      /**< Not enough memory to complete operation */
+	FPGA_NOT_SUPPORTED,  /**< Requested operation is not supported */
+	FPGA_NO_DRIVER,      /**< Driver is not loaded */
+	FPGA_NO_DAEMON,      /**< FPGA Daemon (fpgad) is not running */
+	FPGA_NO_ACCESS,      /**< Insufficient privileges or permissions */
+	FPGA_RECONF_ERROR    /**< Error while reconfiguring FPGA */
+} fpga_result;
+
 struct vai_afu_conn *vai_afu_connect(void);
-int vai_afu_disconnect(struct vai_afu_conn *conn);
-int vai_afu_alloc_region(struct vai_afu_conn *conn, void **buf_addr,
+fpga_result vai_afu_disconnect(struct vai_afu_conn *conn);
+fpga_result vai_afu_alloc_region(struct vai_afu_conn *conn, void **buf_addr,
             uint64_t prefered_addr, uint64_t length);
-int vai_afu_free_region(struct vai_afu_conn *conn, void *buf_addr);
+fpga_result vai_afu_free_region(struct vai_afu_conn *conn, void *buf_addr);
 
 volatile void *vai_afu_malloc(struct vai_afu_conn *conn, uint64_t size);
-void vai_afu_free(struct vai_afu_conn *conn, volatile void *p);
+fpga_result vai_afu_free(struct vai_afu_conn *conn, volatile void *p);
 
-int vai_afu_mmio_read(struct vai_afu_conn *conn, uint64_t offset, uint64_t *value);
-int vai_afu_mmio_write(struct vai_afu_conn *conn, uint64_t offset, uint64_t value);
+fpga_result vai_afu_mmio_read(struct vai_afu_conn *conn, uint64_t offset, uint64_t *value);
+fpga_result vai_afu_mmio_write(struct vai_afu_conn *conn, uint64_t offset, uint64_t value);
+
+fpga_result vai_afu_reset(struct vai_afu_conn *conn);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

@@ -39,8 +39,7 @@
 #include <sys/mman.h>  /* mmap & munmap */
 #include <sys/time.h>  /* struct timeval */
 
-#include <opae/utils.h>
-#include "types_int.h"
+#include <vai/vai.h>
 
 /* Macro for defining symbol visibility */
 #define __FPGA_API__ __attribute__((visibility("default")))
@@ -54,10 +53,6 @@
 
 #define ASSERT_NOT_NULL(arg) \
 	ASSERT_NOT_NULL_MSG(arg, #arg " is NULL")
-static const fpga_guid FPGA_FME_GUID = {
-	0xbf, 0xaf, 0x2a, 0xe9, 0x4a, 0x52, 0x46, 0xe3, 0x82, 0xfe,
-	0x38, 0xf0, 0xf9, 0xe1, 0x77, 0x64
-};
 
 /*
  * Logging functions

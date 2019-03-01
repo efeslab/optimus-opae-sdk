@@ -33,9 +33,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include <opae/utils.h>
+#include <vai/vai.h>
 #include "common_int.h"
-#include "token.h"
 
 // Buffer Allocation constants
 #define KB 1024
@@ -127,17 +126,4 @@ void fpga_print(int loglevel, char *fmt, ...)
 	va_end(argp);
 
 	return;
-}
-
-struct _fpga_token *token_get_parent(struct _fpga_token *_t)
-{
-	if (_t == NULL) {
-		printf(" Token is NULL");
-	}
-
-	if (0 == memcmp(_t->accelerator_id, FPGA_FME_GUID, sizeof(fpga_guid))) {
-		return NULL;
-	} else {
-		return &aseToken[0];
-	}
 }
