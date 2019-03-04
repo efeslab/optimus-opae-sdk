@@ -15,7 +15,7 @@ extern "C" {
 
 #define VAI_MAGIC 0xBB
 #define VAI_BASE 0x0
-extern struct vai_afu_conn *global_conn;
+
 typedef struct {
     uint8_t data[16];
 } afu_id_t;

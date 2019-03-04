@@ -16,7 +16,8 @@
 #include <sys/mman.h>		/* mmap & munmap */
 #include <sys/time.h>		/* struct timeval */
 
-#include <vai/vai.h>
+#include <vai/fpga.h>
+#include "vai_internal.h"
 
 struct vai_afu_conn *vai_afu_connect(void)
 {

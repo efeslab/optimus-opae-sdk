@@ -2,8 +2,10 @@
 /*
  * dlmalloc
  */
-#include <vai/malloc.h>
-#include <vai/vai.h>
+#include <vai/fpga.h>
+#include "malloc_internal.h"
+#include "vai_internal.h"
+
 volatile void *vai_afu_malloc(struct vai_afu_conn *conn, size_t size) {
 	if (conn == global_conn) {
 		return (volatile void*)dlmalloc(size);

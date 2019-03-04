@@ -33,7 +33,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include <vai/vai.h>
+#include <vai/fpga.h>
+#include "vai_internal.h"
 #include "common_int.h"
 
 // Buffer Allocation constants

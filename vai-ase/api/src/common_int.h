@@ -39,7 +39,7 @@
 #include <sys/mman.h>  /* mmap & munmap */
 #include <sys/time.h>  /* struct timeval */
 
-#include <vai/vai.h>
+#include <vai/fpga.h>
 
 /* Macro for defining symbol visibility */
 #define __FPGA_API__ __attribute__((visibility("default")))

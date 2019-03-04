@@ -1,8 +1,9 @@
 /*
  * dlmalloc, for vai_sim
  */
-#include <vai/malloc.h>
-#include <vai/vai.h>
+#include <vai/fpga.h>
+#include "vai_internal.h"
+#include "malloc_internal.h"
 
 struct vai_afu_conn* global_conn;
 /*
