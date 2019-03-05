@@ -130,6 +130,12 @@ if(BUILD_LIBOPAE_C)
   add_subdirectory(libopae)
 endif()
 
+option(BUILD_LIBVAI_C "Enable building of libvai-c." ON)
+mark_as_advanced(BUILD_LIBVAI_C)
+if(BUILD_LIBVAI_C)
+  add_subdirectory(libvai)
+endif()
+
 add_subdirectory(platforms)
 add_subdirectory(tools)
 

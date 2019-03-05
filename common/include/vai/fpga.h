@@ -33,6 +33,8 @@ struct vai_afu_conn {
         struct {
             int fd;
             char *desc;
+            void *mp;
+            volatile uint64_t *bar;
         } hw;
         struct {
             int payload;
