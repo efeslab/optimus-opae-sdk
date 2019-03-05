@@ -26,7 +26,7 @@
 
 cmake_minimum_required(VERSION 2.8.12)
 
-project("opae-c-vai-ase")
+project("vai-c-ase")
 find_package(Threads  REQUIRED)
 set(API_DIR ${PROJECT_SOURCE_DIR})
 set(VAIASEAPI_SRC
@@ -41,24 +41,24 @@ set(VAIASEAPI_SRC
   ${API_DIR}/src/malloc.c
   ${API_DIR}/src/vai_afu_malloc.c)
 
-add_library(opae-c-vai-ase SHARED ${VAIASEAPI_SRC})
-target_link_libraries(opae-c-vai-ase rt safestr)
+add_library(vai-c-ase SHARED ${VAIASEAPI_SRC})
+target_link_libraries(vai-c-ase rt safestr)
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build
 # paths. Keep current directory private.
-target_include_directories(opae-c-vai-ase PUBLIC
+target_include_directories(vai-c-ase PUBLIC
   $<BUILD_INTERFACE:${OPAE_INCLUDE_DIR}>
   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
   $<INSTALL_INTERFACE:include>
   PRIVATE src
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/../sw>)
 
-set_target_properties(opae-c-vai-ase PROPERTIES
+set_target_properties(vai-c-ase PROPERTIES
   VERSION ${INTEL_FPGA_API_VERSION}
   SOVERSION ${INTEL_FPGA_API_VER_MAJOR})
 
-install(TARGETS opae-c-vai-ase
+install(TARGETS vai-c-ase
   LIBRARY DESTINATION ${OPAE_LIB_INSTALL_DIR}
   COMPONENT opaecvaiase)
 
