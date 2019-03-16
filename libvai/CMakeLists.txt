@@ -39,6 +39,7 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Coverage")
 ############################################################################
 set(SRC
   src/malloc.c
+  src/wrapper.c
   src/vai.c)
 
 # Define target

@@ -38,6 +38,7 @@ set(VAIASEAPI_SRC
   ${API_DIR}/../sw/error_report.c
   ${API_DIR}/src/common.c
   ${API_DIR}/src/vai.c
+  ${API_DIR}/src/wrapper.c
   ${API_DIR}/src/malloc.c
   ${API_DIR}/src/vai_afu_malloc.c)
 
