@@ -1,0 +1,13 @@
+#!/bin/bash
+AFU_SYNTH_SETUP=afu_synth_setup
+${AFU_SYNTH_SETUP} $@
+VERILOG_HEADER=${@: -1}/hw/afu_json_info.vh
+echo "Modifying ${VERILOG_HEADER}"
+cat << CONDMACRO >> ${VERILOG_HEADER}
+\`ifdef BUILD_WITH_MUX
+	\`define TOP_IFC_NAME \`AFU_ACCEL_NAME
+\`else
+	\`define TOP_IFC_NAME \`AFU_TOP_IFC
+\`endif
+CONDMACRO
+sed -i 's/"//g' ${VERILOG_HEADER}

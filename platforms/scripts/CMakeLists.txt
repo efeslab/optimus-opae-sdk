@@ -31,7 +31,8 @@ include(packaging)
 ## All the scripts to install that aren't zipped, just copied.
 set(PLATFORM_SCRIPTS
         afu_synth_setup
-        rtl_src_config)
+        rtl_src_config
+	vai_synth_setup)
 
 foreach(SRC ${PLATFORM_SCRIPTS})
   ## Substitute CMake variables of the form @<var>@ in the source file
