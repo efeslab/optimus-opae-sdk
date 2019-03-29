@@ -23,14 +23,16 @@
 #ifndef MALLOC_280_H
 #define MALLOC_280_H
 
-/*                                                                              
- * configuration                                                                
- */                                                                             
-#define HAVE_MORECORE 0                                                         
+/*
+ * configuration
+ */
+#define HAVE_MORECORE 0
 #define MALLOC_ALIGNMENT 256
-#define DEFAULT_MMAP_THRESHOLD MAX_SIZE_T                                       
+#define DEFAULT_MMAP_THRESHOLD MAX_SIZE_T
+// allocation granularity is 2M
+#define DEFAULT_GRANULARITY (1UL << 21)
 #define MMAP_RESERVE_VMSPACE_SIZE (1L<<36)
-#define USE_LOCKS 1                                                             
+#define USE_LOCKS 1
 #define ONLY_MSPACES 1
 #include "vai_types.h"
 #include "vai_internal.h"
