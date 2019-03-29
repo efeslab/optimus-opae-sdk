@@ -27,7 +27,7 @@
  * configuration                                                                
  */                                                                             
 #define HAVE_MORECORE 0                                                         
-#define MALLOC_ALIGNMENT 64                                                     
+#define MALLOC_ALIGNMENT 256
 #define DEFAULT_MMAP_THRESHOLD MAX_SIZE_T                                       
 #define MMAP_RESERVE_VMSPACE_SIZE (1L<<36)
 #define USE_LOCKS 1                                                             
