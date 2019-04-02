@@ -1,4 +1,5 @@
 #include <vai/fpga.h>
+#include <linux/mman.h>
 #include "malloc_internal.h"
 #include "vai_internal.h"
 
