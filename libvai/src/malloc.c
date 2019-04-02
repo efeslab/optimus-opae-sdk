@@ -4147,7 +4147,7 @@ static void* sys_alloc(mstate m, size_t nb) {
   if (HAVE_MMAP && tbase == CMFAIL) {  /* Try MMAP */
     if (!is_initialized(m)) { //initialize large 64GB mmap
         m->seg.base = mmap(NULL, MMAP_RESERVE_VMSPACE_SIZE, PROT_NONE,
-                MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+                MAP_PRIVATE|MAP_ANONYMOUS|MAP_NORESERVE|MAP_HUGETLB|MAP_HUGE_2MB, -1, 0);
         m->seg.size = 0;
         if (m->seg.base == MAP_FAILED) {
             goto MMAP_SKIP;
@@ -4336,8 +4336,7 @@ static int sys_trim(mstate m, size_t pad) {
             /* Prefer mremap, fall back to munmap */
             //if ((CALL_MREMAP(sp->base, sp->size, newsize, 0) != MFAIL) ||
             //    (CALL_MUNMAP(sp->base + newsize, extra) == 0)) {
-            if ((mprotect(sp->base + newsize, extra, PROT_NONE) != -1) &&
-                (madvise(sp->base + newsize, extra, MADV_DONTNEED) != -1)) {
+            if ((mprotect(sp->base + newsize, extra, PROT_NONE) != -1)) {
               released = extra;
             }
           }
@@ -5450,7 +5449,7 @@ mspace create_mspace(size_t capacity, int locked, struct vai_afu_conn *conn) {
     size_t rs = ((capacity == 0)? mparams.granularity :
                  (capacity + TOP_FOOT_SIZE + msize));
     size_t tsize = granularity_align(rs);
-    char* tbase = mmap(NULL, MMAP_RESERVE_VMSPACE_SIZE, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    char* tbase = mmap(NULL, MMAP_RESERVE_VMSPACE_SIZE, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_NORESERVE|MAP_HUGETLB|MAP_HUGE_2MB, -1, 0);
     int ret_mpt = mprotect(tbase, tsize, MMAP_PROT);
     int ret_vmap;
     if (ret_mpt != -1) {
