@@ -2,8 +2,7 @@
 #include <vai/fpga.h>
 #include <stdio.h>
 
-#define UNUSED_PARAM(x) (void)x
-
+#define TOKEN_MAGIC ((void*)(0x2333666))
 fpga_result fpgaEnumerate(const fpga_properties *filters,
 			  uint32_t num_filters, fpga_token *tokens,
 			  uint32_t max_tokens, uint32_t *num_matches)
@@ -15,14 +14,14 @@ fpga_result fpgaEnumerate(const fpga_properties *filters,
     if (max_tokens == 0)
         return FPGA_EXCEPTION;
 
-    *tokens = 0x2333666;
+    *tokens = TOKEN_MAGIC;
     *num_matches = 1;
     return FPGA_OK;
 }
 
 fpga_result fpgaDestroyToken(fpga_token *token)
 {
-    *token = 0x0;
+    *token = 0;
     return FPGA_OK;
 }
 
@@ -32,7 +31,7 @@ fpga_result fpgaOpen(fpga_token token, fpga_handle *handle, int flags)
 
     UNUSED_PARAM(flags);
 
-    if (token != 0x2333666)
+    if (token != TOKEN_MAGIC)
         return FPGA_EXCEPTION;
 
     conn = vai_afu_connect();

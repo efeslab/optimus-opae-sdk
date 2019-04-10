@@ -28,15 +28,36 @@ enum fpga_open_flags {
 };
 
 
-typedef uint64_t fpga_token;
-typedef uint64_t fpga_properties;
+typedef uint64_t *fpga_token;
+typedef uint64_t *fpga_properties;
 typedef void *fpga_handle;
+typedef uint8_t fpga_guid[16];
+typedef int fpga_object;
 
 /* enumerate */
 fpga_result fpgaEnumerate(const fpga_properties *filters,
 			  uint32_t num_filters, fpga_token *tokens,
 			  uint32_t max_tokens, uint32_t *num_matches);
 fpga_result fpgaDestroyToken(fpga_token *token);
+static inline fpga_result fpgaGetProperties(fpga_token token, fpga_properties *prop) {
+    UNUSED_PARAM(token);
+    UNUSED_PARAM(prop);
+    return FPGA_OK;
+}
+static inline fpga_result fpgaPropertiesSetGUID(const fpga_properties prop, fpga_guid guid) {
+    UNUSED_PARAM(prop);
+    UNUSED_PARAM(guid);
+    return FPGA_OK;
+}
+static inline fpga_result fpgaPropertiesSetObjectType(const fpga_properties prop, fpga_object objtype) {
+    UNUSED_PARAM(prop);
+    UNUSED_PARAM(objtype);
+    return FPGA_OK;
+}
+static inline fpga_result fpgaDestroyProperties(fpga_properties *prop) {
+    *prop = 0;
+    return FPGA_OK;
+}
 
 /* open */
 fpga_result fpgaOpen(fpga_token token, fpga_handle *handle, int flags);

@@ -110,8 +110,6 @@ enum fpga_loglevel {
 #define FPGA_DBG(format, ...) {}
 #endif // LIBFPGA_DEBUG
 
-#define UNUSED_PARAM(x) ((void)x)
-
 void fpga_print(int loglevel, char *fmt, ...);
 struct _fpga_token *token_get_parent(struct _fpga_token *);
 fpga_result objectid_for_ase(uint64_t *object_id);
