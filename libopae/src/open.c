@@ -38,6 +38,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+#include "intel-fpga.h"
+
 fpga_result __FPGA_API__ fpgaOpen(fpga_token token, fpga_handle *handle, int flags)
 {
 	fpga_result result = FPGA_NOT_FOUND;
@@ -142,5 +144,39 @@ out_free:
 		close(fddev);
 	}
 
+    fpgaIOMMUOpen(handle);
+
 	return result;
 }
+
+fpga_result __FPGA_API__ fpgaIOMMUOpen(fpga_handle handle)
+{
+    struct _fpga_handle *_handle = (struct _fpga_handle *)handle;
+    fpga_result result = FPGA_OK;
+    int err = 0;
+
+    result = handle_check_and_lock(_handle);
+    if (result)
+        return result;
+
+    if (-1 == _handle->fddev) {
+		FPGA_ERR("Invalid handle file descriptor");
+		err = pthread_mutex_unlock(&_handle->lock);
+		if (err) {
+			FPGA_ERR("pthread_mutex_unlock() failed: %S", strerror(err));
+		}
+		return FPGA_INVALID_PARAM;
+	}
+
+    if (ioctl(_handle->fddev, FPGA_IOMMU_ATTACH_DEV, NULL)) {
+        printf("jcma: failed to setup iommu\n");
+        pthread_mutex_unlock(&_handle->lock);
+        return FPGA_EXCEPTION;
+    }
+
+    pthread_mutex_unlock(&_handle->lock);
+
+    return FPGA_OK;
+}
+
+

@@ -370,3 +370,61 @@ fpga_result __FPGA_API__ fpgaGetIOAddress(fpga_handle handle, uint64_t wsid,
 	}
 	return result;
 }
+
+fpga_result __FPGA_API__ fpgaIOMMUMapAddress(fpga_handle handle, uint64_t va,
+                        uint64_t pa)
+{
+    struct _fpga_handle *_handle = (struct _fpga_handle *)handle;
+    fpga_result result = FPGA_OK;
+    struct fpga_iommu_map_page_info info;
+    int err;
+
+    printf("iommu map page: va=0x%016lx, pa=0x%016lx\n", va, pa);
+
+    result = handle_check_and_lock(_handle);
+    if (result)
+        return result;
+
+    info.va = va;
+    info.pa = pa;
+
+    if (ioctl(_handle->fddev, FPGA_IOMMU_MAP_PG, &info)) {
+        printf("iommu map failed\n");
+        result = FPGA_INVALID_PARAM;
+    }
+
+    err = pthread_mutex_unlock(&_handle->lock);
+    if (err) {
+		FPGA_ERR("pthread_mutex_unlock() failed: %s", strerror(err));
+    }
+
+    return result;
+}
+
+fpga_result __FPGA_API__ fpgaIOMMUUnmapAddress(fpga_handle handle, uint64_t va)
+{
+    struct _fpga_handle *_handle = (struct _fpga_handle *)handle;
+    fpga_result result = FPGA_OK;
+    struct fpga_iommu_unmap_page_info info;
+    int err;
+
+    printf("iommu unmap page: va=0x%016lx", va);
+
+    result = handle_check_and_lock(_handle);
+    if (result)
+        return result;
+
+    info.va = va;
+
+    if (ioctl(_handle->fddev, FPGA_IOMMU_UNMAP_PG, &info)) {
+        printf("iommu unmap failed\n");
+        result = FPGA_INVALID_PARAM;
+    }
+
+    err = pthread_mutex_unlock(&_handle->lock);
+    if (err) {
+		FPGA_ERR("pthread_mutex_unlock() failed: %s", strerror(err));
+    }
+
+    return result;
+}

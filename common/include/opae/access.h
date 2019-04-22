@@ -101,6 +101,12 @@ fpga_result fpgaClose(fpga_handle handle);
  */
 fpga_result fpgaReset(fpga_handle handle);
 
+/* jcma:
+ * IOMMU support 
+ */
+fpga_result fpgaIOMMUOpen(fpga_handle handle);
+fpga_result fpgaIOMMUClose(fpga_handle handle);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif // __cplusplus

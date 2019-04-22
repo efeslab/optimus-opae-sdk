@@ -36,6 +36,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "intel-fpga.h"
+
 static void unmap_mmio_region(struct wsid_map *wm)
 {
 	if (munmap((void *)wm->offset, wm->len)) {
@@ -85,4 +87,34 @@ fpga_result __FPGA_API__ fpgaClose(fpga_handle handle)
 	free(_handle);
 
 	return FPGA_OK;
+}
+
+fpga_result __FPGA_API__ fpgaIOMMUClose(fpga_handle handle)
+{
+    struct _fpga_handle *_handle = (struct _fpga_handle *)handle;
+    fpga_result result = FPGA_OK;
+    int err = 0;
+
+    result = handle_check_and_lock(_handle);
+    if (result)
+        return result;
+
+    if (-1 == _handle->fddev) {
+		FPGA_ERR("Invalid handle file descriptor");
+		err = pthread_mutex_unlock(&_handle->lock);
+		if (err) {
+			FPGA_ERR("pthread_mutex_unlock() failed: %S", strerror(err));
+		}
+		return FPGA_INVALID_PARAM;
+	}
+
+    if (ioctl(_handle->fddev, FPGA_IOMMU_DETACH_DEV, NULL)) {
+        printf("jcma: failed to detach iommu\n");
+        pthread_mutex_unlock(&_handle->lock);
+        return FPGA_EXCEPTION;
+    }
+    
+    pthread_mutex_unlock(&_handle->lock);
+
+    return FPGA_OK;
 }

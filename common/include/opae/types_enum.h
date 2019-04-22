@@ -131,7 +131,9 @@ enum fpga_buffer_flags {
  */
 enum fpga_open_flags {
 	/** Open FPGA resource for shared access */
-	FPGA_OPEN_SHARED = (1u << 0)
+	FPGA_OPEN_SHARED = (1u << 0),
+    /* jcma: use iommu */
+    FPGA_OPEN_WITH_IOMMU
 };
 
 /**
