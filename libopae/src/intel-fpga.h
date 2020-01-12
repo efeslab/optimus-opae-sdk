@@ -33,7 +33,6 @@
 #define FPGA_BASE 0
 #define PORT_BASE 0x40
 #define FME_BASE 0x80
-#define IOMMU_BASE 0xc0
 
 /* Common IOCTLs for both FME and AFU file descriptor */
 
@@ -343,10 +342,8 @@ struct fpga_iommu_unmap_page_info {
 };
 
 /* jcma: add this to support IOMMU */
-#define FPGA_IOMMU_ATTACH_DEV   _IO(FPGA_MAGIC, IOMMU_BASE + 0)
-#define FPGA_IOMMU_DETACH_DEV   _IO(FPGA_MAGIC, IOMMU_BASE + 1)
-#define FPGA_IOMMU_MAP_PG       _IO(FPGA_MAGIC, IOMMU_BASE + 2)
-#define FPGA_IOMMU_UNMAP_PG     _IO(FPGA_MAGIC, IOMMU_BASE + 3)
+#define FPGA_IOMMU_ATTACH_DEV   _IO(FPGA_MAGIC, PORT_BASE + 11)
+#define FPGA_IOMMU_DETACH_DEV   _IO(FPGA_MAGIC, PORT_BASE + 12)
 
 
 #endif /* _UAPI_INTEL_FPGA_H */

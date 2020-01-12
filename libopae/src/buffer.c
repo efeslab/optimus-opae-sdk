@@ -58,17 +58,18 @@
 #define MAP_1G_HUGEPAGE	(0x1e << MAP_HUGE_SHIFT) /* 2 ^ 0x1e = 1G */
 
 #ifdef __ia64__
-#define ADDR (void *)(0x8000000000000000UL)
+#define ADDR (void *)(0x20000000UL)
 #define FLAGS_4K (MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED)
 #define FLAGS_2M (FLAGS_4K | MAP_HUGETLB)
 #define FLAGS_1G (FLAGS_2M | MAP_1G_HUGEPAGE)
 #else
-#define ADDR (void *)(0x0UL)
+#define ADDR (void *)(0x20000000UL)
 #define FLAGS_4K (MAP_PRIVATE | MAP_ANONYMOUS)
 #define FLAGS_2M (FLAGS_4K | MAP_HUGETLB)
 #define FLAGS_1G (FLAGS_2M | MAP_1G_HUGEPAGE)
 #endif
 
+static void *addr_cursor = ADDR;
 
 /*
  * Allocate (mmap) new buffer
@@ -84,12 +85,9 @@ static fpga_result buffer_allocate(void **addr, uint64_t len, int flags)
 	/* ! FPGA_BUF_PREALLOCATED, allocate memory using huge pages
 	   For buffer > 2M, use 1G-hugepage to ensure pages are
 	   contiguous */
-	if (len > 2 * MB)
-		addr_local = mmap(ADDR, len, PROTECTION, FLAGS_1G, 0, 0);
-	else if (len > 4 * KB)
-		addr_local = mmap(ADDR, len, PROTECTION, FLAGS_2M, 0, 0);
-	else
-		addr_local = mmap(ADDR, len, PROTECTION, FLAGS_4K, 0, 0);
+    //printf("len: %#llx, addr_cursor: %#llx\n", (unsigned long long)len, (unsigned long long) addr_cursor);
+    addr_local = mmap(addr_cursor, len, PROTECTION, FLAGS_2M, 0, 0);
+    addr_cursor += len;
 	if (addr_local == MAP_FAILED) {
 		if (errno == ENOMEM) {
 			if (len > 2 * MB)
@@ -157,6 +155,12 @@ fpga_result __FPGA_API__ fpgaPrepareBuffer(fpga_handle handle, uint64_t len,
 	bool quiet = (flags & FPGA_BUF_QUIET);
 
 	uint64_t pg_size;
+
+    if (len < 2 * MB)
+        len = 2 * MB;
+
+    if (len % (2*MB) != 0)
+        len = (len & ~0x1fffff) + 2 * MB;
 
 	result = handle_check_and_lock(_handle);
 	if (result)
@@ -371,6 +375,7 @@ fpga_result __FPGA_API__ fpgaGetIOAddress(fpga_handle handle, uint64_t wsid,
 	return result;
 }
 
+#if 0
 fpga_result __FPGA_API__ fpgaIOMMUMapAddress(fpga_handle handle, uint64_t va,
                         uint64_t pa)
 {
@@ -428,3 +433,4 @@ fpga_result __FPGA_API__ fpgaIOMMUUnmapAddress(fpga_handle handle, uint64_t va)
 
     return result;
 }
+#endif

@@ -169,7 +169,7 @@ fpga_result __FPGA_API__ fpgaIOMMUOpen(fpga_handle handle)
 	}
 
     if (ioctl(_handle->fddev, FPGA_IOMMU_ATTACH_DEV, NULL)) {
-        printf("jcma: failed to setup iommu\n");
+        printf("jcma: failed to setup iommu, ioctl: %#x\n", FPGA_IOMMU_ATTACH_DEV);
         pthread_mutex_unlock(&_handle->lock);
         return FPGA_EXCEPTION;
     }
